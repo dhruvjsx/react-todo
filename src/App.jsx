@@ -1,6 +1,7 @@
-import { useState } from 'react'
-import './App.css'
-import TaskItems from './Components/TaskItem';
+import React, { useState } from "react"
+// import { useState } from 'react'
+// import './App.css'
+import TaskList from './Components/TaskList';
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -13,12 +14,9 @@ function App() {
     }
   };
 
-
   const clearAll = () => {
     setTasks([]);
   };
-
-
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-red-500 p-5">
@@ -34,34 +32,27 @@ function App() {
           />
           <button
             onClick={addTask}
-            className="ml-2  text-blue-500 px-4 py-2 rounded-md"
+            className="ml-2  cursor-pointer text-blue-500 px-4 py-2 rounded-md"
           >
             ADD
           </button>
         </div>
       { tasks.length>0 && <div className="mt-4 bg-gray-100 p-4 ">
           <ul className="space-y-2">
-            {tasks.map((task, index) => (
-           <TaskItems  
-           key={index} 
-           task={task} 
-           parentIndexPath={[index]} 
-           setTasks={setTasks}
-       />
-            ))}
-          </ul>
-          {tasks.length > 0 && (
-            <button
-              onClick={clearAll}
-              className="mt-2 w-full text-right text-blue-500"
-            >
-              Clear All
-            </button>
-          )}
-        </div>}
-      </div>
-    </div>
-  );
+         <TaskList tasks={tasks} setTasks={setTasks} />
+       </ul>
+       {tasks.length > 0 && (
+         <button
+           onClick={clearAll}
+           className="mt-2 cursor-pointer w-full text-right text-blue-500"
+         >
+           Clear All
+         </button>
+       )}
+     </div>}
+   </div>
+ </div>
+);
 }
 
 export default App

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React,{ useCallback, useState } from 'react';
 import { TiTick } from 'react-icons/ti';
 import { MdClose } from 'react-icons/md';
 import { IoAdd, IoArrowUndoOutline } from 'react-icons/io5';
@@ -7,7 +7,7 @@ function TaskItems({ setTasks, task, parentIndexPath }) {
     const [showInputField, setShowInputField] = useState(false);
     const [inputFieldText, setInputFieldText] = useState("");
 
-    const addSubtaskRecursive = (tasks, indexPath, newSubtask) => {
+    const addSubtaskRecursive = useCallback((tasks, indexPath, newSubtask) => {
         if (indexPath?.length === 0) return tasks;
     
         return tasks.map((t, i) => {
@@ -26,13 +26,13 @@ function TaskItems({ setTasks, task, parentIndexPath }) {
             }
             return t;
         });
-    };
+    },[]);
     
     const handleDeleteTask = (indexPath) => {
         setTasks((prevTasks) => deleteTaskRecursive(prevTasks, indexPath));
     };
 
-    const deleteTaskRecursive = (tasks, indexPath) => {
+    const deleteTaskRecursive = useCallback((tasks, indexPath) => {
         if (indexPath.length === 0) {
             return tasks;
         }
@@ -56,8 +56,8 @@ function TaskItems({ setTasks, task, parentIndexPath }) {
                 subtasks: task.subtasks ? deleteTaskRecursive(task.subtasks, indexPath) : [],
             };
         }).filter(task => task !== null); 
-    };
-    const markTaskRecursive =(tasks,indexPath)=>{
+    },[]);
+    const markTaskRecursive =useCallback((tasks,indexPath)=>{
         if (indexPath?.length === 0) return tasks;
     
         return tasks.map((t, i) => {
@@ -78,7 +78,7 @@ function TaskItems({ setTasks, task, parentIndexPath }) {
             }
             return t;
         });
-    }
+    },[])
     const handleKeyDown = (event) => {
         if (event.key === "Enter" && inputFieldText.trim() !== "") {
             const newSubtask = { text: inputFieldText, completed: false, subtasks: [] };
@@ -93,24 +93,29 @@ function TaskItems({ setTasks, task, parentIndexPath }) {
     return (
         <li className={`p-3 flex flex-col gap-4 ${task.completed ? "line-through text-red-500" : ""}`}>
             <div className='flex gap-4'>
+                
                 <div className="flex gap-2">
                     <button
                         onClick={() => setTasks(prevTasks =>
                             markTaskRecursive(prevTasks, parentIndexPath, { ...task, completed: !task.completed })
                         )}
+                        aria-label="Tick"
                         className="bg-blue-500 cursor-pointer text-white px-3 py-1 rounded-md"
                     >
                         {task.completed ? <IoArrowUndoOutline /> : <TiTick />}
                     </button>
 
                     <button
+                       aria-label="close"
                        onClick={() => handleDeleteTask(parentIndexPath)}
                         className="bg-gray-500 cursor-pointer text-white px-3 py-1 rounded-md"
                     >
+                     
                         <MdClose />
                     </button>
 
                     <button
+                       aria-label="add"
                         onClick={() => setShowInputField(!showInputField)}
                         className="bg-gray-500 cursor-pointer text-white px-3 py-1 rounded-md"
                     >
